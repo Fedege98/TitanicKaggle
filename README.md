@@ -1,3 +1,8 @@
+
+Leggere il file TitanicChallenge.pdf per visualizzare il pdf con diagramma di Gantt in cui viene esposta la progettazione delle attività. 
+
+
+-------------------------------------------------------------------------------------------------------------------------
 # TitanicKaggle
 AI project Kaggle challenge related to Titanic Disaster
 Overview:
