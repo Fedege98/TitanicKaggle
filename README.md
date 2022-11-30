@@ -12,3 +12,16 @@ The training set should be used to build your machine learning models. For the t
 The test set should be used to see how well your model performs on unseen data. For the test set, we do not provide the ground truth for each passenger. It is your job to predict these outcomes. For each passenger in the test set, use the model you trained to predict whether or not they survived the sinking of the Titanic.
 
 We also include gender_submission.csv, a set of predictions that assume all and only female passengers survive, as an example of what a submission file should look like.
+
+|Variable	|Definition	|Key
+|------------|---------|--------
+|survival 	|Survival |	0 = No, 1 = Yes
+|class |	Ticket class |	1 = 1st, 2 = 2nd, 3 = 3rd
+|sex 	|Sex 	|
+|Age |	Age in years |	
+|sibsp |	# of siblings / spouses aboard the Titanic 	|
+|parch |	# of parents / children aboard the Titanic 	
+|ticket |	Ticket number 	|
+|fare 	|Passenger fare 	|
+|cabin |	Cabin number 	|
+|embarked |	Port of Embarkation |	C = Cherbourg, Q = Queenstown, S = Southampton|
