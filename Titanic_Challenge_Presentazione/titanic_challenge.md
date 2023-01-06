@@ -70,11 +70,11 @@ Una volta che l'algoritmo ha imparato a prevedere correttamente se un passeggero
 
 ## Rete neurale
 
-![bg left:55% w:85% invert:80%](./img/neurale.svg)
+![invert:80%](./img/neurale.svg)
 
-Le reti neurali si basano principalmente sulla simulazione di neuroni artificiali opportunamente collegati
+<!-- Le reti neurali si basano principalmente sulla simulazione di neuroni artificiali opportunamente collegati -->
 
----
+<!-- ---
 
 ### Funzionamento
 
@@ -94,7 +94,7 @@ Gli input vengono elaborati dai neuroni del primo strato e inviati al secondo st
 
 Il secondo strato elabora ulteriormente gli input e li invia al terzo strato, chiamato <b style="color:#8ee8fc;">strato di uscita</b>.
 
-![bg right:20%](./img/neurale05.jpeg)
+![bg right:20%](./img/neurale05.jpeg) -->
 
 ---
 
@@ -129,7 +129,7 @@ RangeIndex: 891 entries, 0 to 890
  #   Column       Non-Null Count  Dtype  
  #   ------       --------------  -----  
  0   PassengerId  891 non-null    int64  
- 1   Survived     891 non-null    int64
+ 1   Survived     891 non-null    int64  
  2   Pclass       891 non-null    int64  
  3   Name         891 non-null    object 
  4   Sex          891 non-null    object 
@@ -139,6 +139,7 @@ RangeIndex: 891 entries, 0 to 890
  8   Ticket       891 non-null    object 
  9   Fare         891 non-null    float64
  10  Cabin        204 non-null    object 
+ 11  Embarked     889 non-null    object 
 ```
 
 ---
@@ -178,86 +179,142 @@ RangeIndex: 418 entries, 0 to 417
 Alcune colonne non sono utili per raggiungere il nostro obiettivo.
 Il primo passo consiste quindi nel <b style="color:#8ee8fc;">selezionare le colonne</b> coi dati che, ipoteticamente, possono avere un'influenza sulla sopravvivenza di un passeggero
 
+```python
+clean_training_set = training_set[["Pclass", "Sex", "Age", "Parch", "SibSp", "Embarked", "Survived"]]
+```
+
 ---
 
 Queste le colonne trattenute dal file `train.csv`
 
-```pandas
-RangeIndex: 891 entries, 0 to 890        <--
- #   Column       Non-Null Count  Dtype  
----  ------       --------------  -----  
- 0   PassengerId  891 non-null    int64  
- 1   Pclass       891 non-null    int64  
- 2   Sex          891 non-null    object 
- 3   Age          714 non-null    float64
- 4   Parch        891 non-null    int64  
- 5   SibSp        891 non-null    int64  
- 6   Survived     891 non-null    int64  
+```python
+RangeIndex: 891 entries, 0 to 890
+ #   Column    Non-Null Count  Dtype  
+ #   ------    --------------  -----  
+ 0   Pclass    891 non-null    int64  
+ 1   Sex       891 non-null    object 
+ 2   Age       714 non-null    float64
+ 3   Parch     891 non-null    int64  
+ 4   SibSp     891 non-null    int64  
+ 5   Embarked  889 non-null    object 
+ 6   Survived  891 non-null    int64   
 ```
 
 ---
 
 ## Correlazioni
 
-```python
-import seaborn as sns
-
-ax = sns.heatmap(clean_training_set.corr(), annot=True)
-```
-
-![w:500 h:auto](./img/graph01.png)
+![w:650 h:auto](./img/graph01.png)
 
 ---
 
 ### Classe di viaggio
 
-La morte dei passeggeri sembra essere altamente correlata alla loro classe
+<!-- La morte dei passeggeri sembra essere altamente correlata alla loro classe -->
 
-```python
-class_scheme = clean_training_set.groupby('Pclass')['Survived'].apply(lambda x: (x==0).mean())
-class_scheme.plot(kind='bar', color='darkorange', width = 0.5, title='Class and death relation', ylabel='deaths', xlabel='travel class')
-```
-
-![w:450 h:auto](./img/graph02.png)
+![w:650 h:auto](./img/graph02.png)
 
 ---
 
 ### Sesso
 
-Come si può notare, il tasso di mortalità dei maschi è maggiore di quello delle femmine
+<!-- Come si può notare, il tasso di mortalità dei maschi è maggiore di quello delle femmine -->
 
-```python
-sex_scheme = clean_training_set.groupby('Sex')['Survived'].apply(lambda x: (x==0).mean())
-sex_scheme.plot(kind='bar', color='darkorange', width = 0.4, title='Sex and death relation', ylabel='deaths', xlabel='sex')
-```
-
-![w:410 h:auto](./img/graph03.png)
+![w:650 h:auto](./img/graph03.png)
 
 ---
 
 ### Età
 
-I bambini e gli anziani sul Titanic morirono meno delle persone di mezza età (probabilmente perché avevano la priorità)
+<!-- I bambini e gli anziani sul Titanic morirono meno delle persone di mezza età (probabilmente perché avevano la priorità) -->
 
-```python
-age_scheme = clean_training_set.groupby('Age')['Survived'].mean()
-age_scheme.plot(kind='line', color='darkorange', title='Age and death relation', ylabel='survived', xlabel='age')
-```
-
-![w:400 h:auto](./img/graph04.png)
+![w:650 h:auto](./img/graph04.png)
 
 ---
 
 ### Matrimonio
 
-Il numero di figli sembra essere un fattore di probabilità di morte
+<!-- Il numero di figli sembra essere un fattore di probabilità di morte -->
 
-```python
-parch_scheme = clean_training_set.groupby('Parch')['Survived'].apply(lambda x: (x==0).mean())
-parch_scheme.plot(kind='bar', color='darkorange', width = 0.8, title='SibSp and death relation', ylabel='deaths', xlabel='Parch')
+![w:650 h:auto](./img/graph05.png)
+
+---
+
+### Luogo d'imbarco
+
+<!-- Le persone imbarcate a Cherbourg morirono meno di quelle imbarcate a Queenstown o a Southampton -->
+
+![w:650 h:auto](./img/graph06.png)
+
+---
+
+## Normalizzazione
+
+```pandas
+PassengerId	Pclass	Sex	Age	Parch	SibSp	Embarked
+0	892	3	0	34.5	0	0	Q
+1	893	3	1	47.0	0	1	S
+2	894	2	0	62.0	0	0	Q
+3	895	3	0	27.0	0	0	S
+4	896	3	1	22.0	1	1	S
+...	...	...	...	...	...	...	...
+413	1305	3	0	NaN	0	0	S
+414	1306	1	1	39.0	0	0	C
+415	1307	3	0	38.5	0	0	S
+416	1308	3	0	NaN	0	0	S
+417	1309	3	0	NaN	1	1	C
 ```
 
-![w:500 h:auto](./img/graph05.png)
+---
+
+### Normalizzare il DataSet
+
+Convertire i <b style="color:#8ee8fc;">maschi</b> nel valore <b style="color:#8ee8fc;">0</b> e le <b style="color:#8ee8fc;">femmine</b> nel valore <b style="color:#8ee8fc;">1</b>
+
+Sostituire i valori <b style="color:#8ee8fc;">NaN</b> della colonna Age con <b style="color:#8ee8fc;">l'età media</b>, ossia 30 anni
+
+Nella colonna <b style="color:#8ee8fc;">Embarked</b> sostituire coi numeri <b style="color:#8ee8fc;">0</b>, <b style="color:#8ee8fc;">1</b> e <b style="color:#8ee8fc;">2</b>  le lettere <b style="color:#8ee8fc;">C</b>(herbourg), <b style="color:#8ee8fc;">Q</b>(ueenstown) e <b style="color:#8ee8fc;">S</b>(outhampton):
+
+```python
+# Transforms from numbers to strings
+df["Embarked"]=df.Embarked.map({"C":0,"Q":1, "S":2})
+```
+
+---
+
+### Normalizzare il DataSet
+
+Dividere la colonna Age in <b style="color:#8ee8fc;">Child</b>, <b style="color:#8ee8fc;">Adult</b> e <b style="color:#8ee8fc;">Elderly</b>
+
+```python
+child_list = df['Age'].apply(lambda x: 1 if x < 18 else 0)
+df.insert(4, "Child", child_list, True)
+
+adult_list = df['Age'].apply(lambda x: 1 if x >= 18 and x < 50 else 0)
+df.insert(5, "Adult", adult_list, True)
+
+elderly_list = df['Age'].apply(lambda x: 1 if x > 50 else 0)
+df.insert(6, "Elderly", elderly_list, True)
+```
+
+---
+
+### DataSet Normalizzato
+
+```pandas
+PassengerId	Pclass	Sex	Child	Adult	Elderly	Parch	SibSp	Embarked
+0	892	3	0	0	1	0	0	0	1
+1	893	3	1	0	1	0	0	1	2
+2	894	2	0	0	0	1	0	0	1
+3	895	3	0	0	1	0	0	0	2
+4	896	3	1	0	1	0	1	1	2
+...	...	...	...	...	...	...	...	...	...
+413	1305	3	0	0	1	0	0	0	2
+414	1306	1	1	0	1	0	0	0	0
+415	1307	3	0	0	1	0	0	0	2
+416	1308	3	0	0	1	0	0	0	2
+417	1309	3	0	0	1	0	1	1	0
+```
 
 ---
 
@@ -279,29 +336,7 @@ Il primo strato è solitamente chiamato strato di ingresso e si occupa di riceve
 
 L'algoritmo <b style="color:#8ee8fc;">MLP</b> è un metodo per addestrare le reti neurali multistrato. Consiste nel modificare i pesi delle connessioni tra i neuroni della rete neurale in modo da ridurre l'errore tra l'output della rete neurale e l'output desiderato. L'algoritmo viene ripetuto finché l'errore non raggiunge un livello accettabile.
 
----
-
-### MLP
-
-Dopo aver normalizzato il DataSet
-
-```python
-
-from sklearn.neural_network import MLPClassifier
-from sklearn.datasets import make_classification
-from sklearn.model_selection import train_test_split
-
-X, Y = make_classification(n_samples=100, random_state=1)
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2,random_state=1)
-
-clf = MLPClassifier(solver='lbfgs', learning_rate='constant', activation='relu', random_state=1, max_iter=800).fit(X_train, y_train)
-
-MLP_score = clf.score(X_test, y_test)
-print('L\'accuratezza dell\'algoritmo Multi-layer Perceptron classifier è',round(MLP_score*100,2))
-
-```
-
-L'accuratezza è del <b style="color:#8ee8fc;">90.0</b>
+L'accuratezza  dell'algoritmo è del <b style="color:#8ee8fc;">77.04</b>
 
 ---
 
