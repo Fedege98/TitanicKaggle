@@ -27,16 +27,17 @@ header: Qzer - 2022
 
 ---
 
-## Il Titanic
+<!-- ## Il Titanic
 
-Il **Titanic** è stato un transatlantico britannico naufragato nelle prime ore del 15 aprile 1912, durante il suo viaggio inaugurale, a causa della collisione con un iceberg.
+Il **Titanic** è stato un transatlantico britannico naufragato nelle prime ore del 15 aprile 1912 a causa della collisione con un iceberg.
 
 ![bg right](./img/titanic.jpg)
 
----
+--- -->
 
-## Qualche numero
+## Il Titanic. Qualche numero
 
+Il **Titanic** è stato un transatlantico naufragato il 15 aprile 1912.
 I passeggeri del Titanic erano teoricamente **2224**, di cui:
 
 - 324 in prima classe;
@@ -44,13 +45,7 @@ I passeggeri del Titanic erano teoricamente **2224**, di cui:
 - 709 in terza;
 - 906 membri dell'equipaggio
 
----
-
-## Morti
-
 Stando ai numeri ufficiali, nel disastro persero la vita ben 1502, <b style="color:#8ee8fc;">67,54%</b>
-
-![bg left:33%](./img/scialuppa.jpg)
 
 ---
 
@@ -68,11 +63,20 @@ Una volta che l'algoritmo ha imparato a prevedere correttamente se un passeggero
 
 ---
 
-## Rete neurale
+## Dati
 
-![invert:80%](./img/neurale.svg)
+<!-- 
+Una volta che l'algoritmo ha imparato a prevedere correttamente se un passeggero sopravviverà o no, possiamo testare la sua capacità di prevedere i risultati fornendogli dei nuovi dati di passeggeri del Titanic e vedendo come si comporta. Se la sua precisione non è soddisfacente, possiamo fornirle altri dati di esempio e continuare ad "addestrarla" finché non raggiunge un livello di precisione accettabile. -->
 
-<!-- Le reti neurali si basano principalmente sulla simulazione di neuroni artificiali opportunamente collegati -->
+In questa competizione avremo accesso a due set di dati simili che includono informazioni sui passeggeri come:
+
+- nome;
+- età;
+- genere;
+- classe socio-economica;
+- ecc.
+
+![bg left:40%](./img/data.jpg)
 
 <!-- ---
 
@@ -98,34 +102,29 @@ Il secondo strato elabora ulteriormente gli input e li invia al terzo strato, ch
 
 ---
 
-## Dati
+## How ?
 
-<!-- 
-Una volta che l'algoritmo ha imparato a prevedere correttamente se un passeggero sopravviverà o no, possiamo testare la sua capacità di prevedere i risultati fornendogli dei nuovi dati di passeggeri del Titanic e vedendo come si comporta. Se la sua precisione non è soddisfacente, possiamo fornirle altri dati di esempio e continuare ad "addestrarla" finché non raggiunge un livello di precisione accettabile. -->
+<br>
+<br>
 
-In questa competizione avremo accesso a due set di dati simili che includono informazioni sui passeggeri come:
+1. Data selection strategy;
 
-- nome;
-- età;
-- genere;
-- classe socio-economica;
-- ecc.
+2. Data preparation;
 
-![bg left:40%](./img/data.jpg)
+3. Algorithm training and testing
+
+---
+
+<br>
+
+<h1 style="display: flex; align-items: center; justify-content: center;width: 100%; height: 70%">Data selection strategy</h1>
 
 ---
 
 ## Train.csv
 
-`Train.csv` conterrà i dettagli di un sottoinsieme dei passeggeri a bordo (891 per l'esattezza) e, soprattutto, conterrà l'informazione relativa al loro destino
-
----
-
 ```python
 training_set = pd.read_csv('/kaggle/input/titanic/train.csv')
-training_set.info()
-
-RangeIndex: 891 entries, 0 to 890        
  #   Column       Non-Null Count  Dtype  
  #   ------       --------------  -----  
  0   PassengerId  891 non-null    int64  
@@ -146,17 +145,8 @@ RangeIndex: 891 entries, 0 to 890
 
 ## Test.csv
 
-Il file `test.csv` contiene informazioni su altri 418 passeggeri, non rivelando la loro sorte.
-
-Il compito della challenge è, utilizzando i dati  del file `train.csv`, prevedere se questi 418 passeggeri a bordo sopravviveranno
-
----
-
 ```python
 testing_set = pd.read_csv('/kaggle/input/titanic/test.csv')
-testing_set.info()
-
-RangeIndex: 418 entries, 0 to 417      
  #   Column       Non-Null Count  Dtype  
  #   ------       --------------  -----  
  0   PassengerId  418 non-null    int64  
@@ -176,16 +166,8 @@ RangeIndex: 418 entries, 0 to 417
 
 ## Data selection
 
-Alcune colonne non sono utili per raggiungere il nostro obiettivo.
-Il primo passo consiste quindi nel <b style="color:#8ee8fc;">selezionare le colonne</b> coi dati che, ipoteticamente, possono avere un'influenza sulla sopravvivenza di un passeggero
-
-```python
-clean_training_set = training_set[["Pclass", "Sex", "Age", "Parch", "SibSp", "Embarked", "Survived"]]
-```
-
----
-
-Queste le colonne trattenute dal file `train.csv`
+<!-- Alcune colonne non sono utili per raggiungere il nostro obiettivo.
+Il primo passo consiste quindi nel <b style="color:#8ee8fc;">selezionare le colonne</b> coi dati che, ipoteticamente, possono avere un'influenza sulla sopravvivenza di un passeggero -->
 
 ```python
 RangeIndex: 891 entries, 0 to 890
@@ -200,74 +182,57 @@ RangeIndex: 891 entries, 0 to 890
  6   Survived  891 non-null    int64   
 ```
 
----
-
-## Correlazioni
-
-![w:650 h:auto](./img/graph01.png)
+Queste le colonne trattenute dal file `train.csv`
 
 ---
 
-### Classe di viaggio
+<br>
 
+<h1 style="display: flex; align-items: center; justify-content: center;width: 100%; height: 70%">Correlazioni</h1>
+
+---
 <!-- La morte dei passeggeri sembra essere altamente correlata alla loro classe -->
-
-![w:650 h:auto](./img/graph02.png)
+<span style="display: flex; align-items: center; justify-content: center;">![w:850 h:auto invert contrast:0.6](./img/graph01.png)</span>
 
 ---
-
-### Sesso
 
 <!-- Come si può notare, il tasso di mortalità dei maschi è maggiore di quello delle femmine -->
 
-![w:650 h:auto](./img/graph03.png)
+<span style="display: flex; align-items: center; justify-content: center;">![w:850 h:auto invert contrast:0.6](./img/graph02.png)</span>
 
 ---
-
-### Età
 
 <!-- I bambini e gli anziani sul Titanic morirono meno delle persone di mezza età (probabilmente perché avevano la priorità) -->
 
-![w:650 h:auto](./img/graph04.png)
+<span style="display: flex; align-items: center; justify-content: center;">![w:850 h:auto invert contrast:0.6](./img/graph03.png)</span>
 
 ---
-
-### Matrimonio
 
 <!-- Il numero di figli sembra essere un fattore di probabilità di morte -->
 
-![w:650 h:auto](./img/graph05.png)
+<span style="display: flex; align-items: center; justify-content: center;">![w:850 h:auto invert contrast:0.6](./img/graph04.png)</span>
 
 ---
 
-### Luogo d'imbarco
+<!-- Il numero di figli sembra essere un fattore di probabilità di morte -->
+
+<span style="display: flex; align-items: center; justify-content: center;">![w:850 h:auto invert contrast:0.6](./img/graph05.png)</span>
+
+---
 
 <!-- Le persone imbarcate a Cherbourg morirono meno di quelle imbarcate a Queenstown o a Southampton -->
 
-![w:650 h:auto](./img/graph06.png)
+<span style="display: flex; align-items: center; justify-content: center;">![w:850 h:auto invert contrast:0.6](./img/graph06.png)</span>
 
 ---
 
-## Normalizzazione
+<br>
 
-```pandas
-PassengerId	Pclass	Sex	Age	Parch	SibSp	Embarked
-0	892	3	0	34.5	0	0	Q
-1	893	3	1	47.0	0	1	S
-2	894	2	0	62.0	0	0	Q
-3	895	3	0	27.0	0	0	S
-4	896	3	1	22.0	1	1	S
-...	...	...	...	...	...	...	...
-413	1305	3	0	NaN	0	0	S
-414	1306	1	1	39.0	0	0	C
-415	1307	3	0	38.5	0	0	S
-416	1308	3	0	NaN	0	0	S
-417	1309	3	0	NaN	1	1	C
-```
+<h1 style="display: flex; align-items: center; justify-content: center;width: 100%; height: 70%">Data preparation</h1>
 
 ---
 
-### Normalizzare il DataSet
+### Encoding del DataSet
 
 Convertire i <b style="color:#8ee8fc;">maschi</b> nel valore <b style="color:#8ee8fc;">0</b> e le <b style="color:#8ee8fc;">femmine</b> nel valore <b style="color:#8ee8fc;">1</b>
 
@@ -282,7 +247,7 @@ df["Embarked"]=df.Embarked.map({"C":0,"Q":1, "S":2})
 
 ---
 
-### Normalizzare il DataSet
+### Encoding del DataSet
 
 Dividere la colonna Age in <b style="color:#8ee8fc;">Child</b>, <b style="color:#8ee8fc;">Adult</b> e <b style="color:#8ee8fc;">Elderly</b>
 
@@ -299,7 +264,7 @@ df.insert(6, "Elderly", elderly_list, True)
 
 ---
 
-### DataSet Normalizzato
+### DataSet finale
 
 ```pandas
 PassengerId	Pclass	Sex	Child	Adult	Elderly	Parch	SibSp	Embarked
@@ -315,6 +280,12 @@ PassengerId	Pclass	Sex	Child	Adult	Elderly	Parch	SibSp	Embarked
 416	1308	3	0	0	1	0	0	0	2
 417	1309	3	0	0	1	0	1	1	0
 ```
+
+---
+
+<br>
+
+<h1 style="display: flex; align-items: center; justify-content: center;width: 100%; height: 70%">Algorithm training and testing</h1>
 
 ---
 
@@ -337,6 +308,34 @@ Il primo strato è solitamente chiamato strato di ingresso e si occupa di riceve
 L'algoritmo <b style="color:#8ee8fc;">MLP</b> è un metodo per addestrare le reti neurali multistrato. Consiste nel modificare i pesi delle connessioni tra i neuroni della rete neurale in modo da ridurre l'errore tra l'output della rete neurale e l'output desiderato. L'algoritmo viene ripetuto finché l'errore non raggiunge un livello accettabile.
 
 L'accuratezza  dell'algoritmo è del <b style="color:#8ee8fc;">77.04</b>
+
+---
+
+## Summary
+
+<br>
+<br>
+
+1. Data selection strategy;
+
+2. Data preparation;
+
+3. Algorithm training and testing
+
+---
+
+## Normalizzazione
+
+<br>
+<br>
+<br>
+
+```python
+from sklearn import preprocessing
+scaler = preprocessing.StandardScaler().fit(X_Train)
+X_Train = scaler.transform(X_Train)
+X_Test = scaler.transform(X_Test)
+```
 
 ---
 
