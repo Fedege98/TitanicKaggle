@@ -254,7 +254,7 @@ df.insert(4, "Child", child_list, True)
 adult_list = df['Age'].apply(lambda x: 1 if x >= 18 and x < 50 else 0)
 df.insert(5, "Adult", adult_list, True)
 
-elderly_list = df['Age'].apply(lambda x: 1 if x > 50 else 0)
+elderly_list = df['Age'].apply(lambda x: 1 if x >= 50 else 0)
 df.insert(6, "Elderly", elderly_list, True)
 ```
 
