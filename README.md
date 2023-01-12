@@ -1,7 +1,7 @@
 
 #### `TitanicChallenge.pdf`                      --> Gantt diagram with scheduled activities
 #### `titanicchallenge(final-version).ipynb`     --> Jupyter Notebook containing the code
-#### `Titanic_Challenge/titanic_challenge.pdf`   --> Slides
+#### `Slides/titanic_challenge.pdf`   --> Slides
 
 -------------------------------------------------------------------------------------------------------------------------
 # TitanicKaggle
