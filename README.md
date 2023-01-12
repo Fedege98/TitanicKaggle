@@ -1,6 +1,7 @@
 
-Leggere il file TitanicChallenge.pdf per visualizzare il pdf con diagramma di Gantt in cui viene esposta la progettazione delle attività. 
-
+#### `TitanicChallenge.pdf`                      --> Gantt diagram with scheduled activities
+#### `titanicchallenge(final-version).ipynb`     --> Jupyter Notebook containing the code
+#### `Titanic_Challenge/titanic_challenge.pdf`   --> Slides
 
 -------------------------------------------------------------------------------------------------------------------------
 # TitanicKaggle
